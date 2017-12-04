@@ -1,0 +1,5 @@
+install:
+- npm install
+node index.js
+
+enter localhost:3000
