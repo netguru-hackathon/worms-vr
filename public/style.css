@@ -3,6 +3,14 @@
   padding: 50px;
 }
 
+.server-info {
+  height: 100%;
+  width: 150px;
+  right: 0;
+  position: fixed;
+  background-color: pink;
+}
+
 .debug-info-box {
   position: fixed;
   overflow: scroll;
