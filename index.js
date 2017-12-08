@@ -14,6 +14,10 @@ var remove_player = function(online_players, query) {
   delete online_players[query.unique_hash]
 };
 
+var update_player = function(online_players, player) {
+  online_players[player['unique_hash']] = player;
+};
+
 var print_players = function(online_players) {
   var nicknames = [];
   for(var key in online_players) {
@@ -40,5 +44,11 @@ io.on('connection', function(socket){
     remove_player(online_players, socket.handshake.query);
     console.log(message + ', players left: ' +print_players(online_players));
     io.emit("debug", message);
+  });
+
+  socket.on('shoot', function(query) {
+    update_player(online_players, query);
+    console.log(query);
+    io.emit("debug", query);
   });
 });

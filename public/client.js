@@ -26,7 +26,7 @@ function startGame() {
 
   socket.on('debug', function(message) {
     el = $('<div/>');
-    el.html(message);
+    el.html(JSON.stringify(message));
     $('.js-debug').append(el);
   });
 }
@@ -40,8 +40,13 @@ $('.js-play').on('click', function() {
 });
 
 $('.js-shoot').on('click', function() {
+  socket.emit('shoot', window.state);
   // fetch data from all sensors
 });
+
+setTimeout(function() {
+  getLocation();
+}, 3000);
 
 getLocation();
 window.state = {};

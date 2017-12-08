@@ -5,6 +5,7 @@
 
 .debug-info-box {
   position: fixed;
+  overflow: scroll;
   bottom: 0;
   width: 100%;
   height: 150px;
