@@ -28,8 +28,8 @@ var print_players = function(online_players) {
 
 app.use(express.static('public'))
 
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+http.listen(process.env.NODE_PORT, function() {
+  console.log('listening on *:'+ process.env.NODE_PORT);
 });
 
 io.on('connection', function(socket){
