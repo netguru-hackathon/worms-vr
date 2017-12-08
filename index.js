@@ -38,8 +38,10 @@ var print_players = function(online_players) {
 
 app.use(express.static('public'))
 
-http.listen(process.env.NODE_PORT, function() {
-  console.log('listening on *:'+ process.env.NODE_PORT);
+var actual_port = process.env.PORT || process.env.NODE_PORT;
+
+http.listen(actual_port, function() {
+  console.log('listening on *:'+ actual_port);
 });
 
 io.on('connection', function(socket){
