@@ -3,13 +3,22 @@
   padding: 50px;
 }
 
+.wrapper {
+  max-width: 900;
+}
+
 .server-info {
-  height: 100%;
+  display: none;
   width: 150px;
+  top: 0;
   right: 0;
-  position: fixed;
+  position: absolute;
   background-color: pink;
   z-index: 2;
+}
+
+.scene {
+  display: none;
 }
 
 .debug-info-box {
@@ -23,6 +32,7 @@
 }
 
 video {
+  display: none;
   background-color: red;
   height: 800px;
   position: absolute;

@@ -49,6 +49,9 @@ $('.js-play').on('click', function() {
   startGame();
   $('.js-nick-modal').hide();
   $('.js-shoot').show();
+  $('.js-server-info').show();
+  $('.js-video').show();
+  $('.js-scene').show();
 });
 
 $('.js-shoot').on('click', function() {
