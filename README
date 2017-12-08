@@ -1,5 +1,6 @@
 install:
 - npm install
-node index.js
+- set NODE_PORT env var
+- node index.js
 
-enter localhost:3000
+enter localhost:NODE_PORT

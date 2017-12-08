@@ -35,6 +35,12 @@ function startGame() {
     el.html(JSON.stringify(message));
     $('.js-debug').append(el);
   });
+
+  socket.on('server_info', function(message) {
+    $('.js-players-online').html(message['player_count']);
+    $('.js-current-turn').html(message['current_turn']);
+    $('.js-whos-online').html(message['whos_online']);
+  });
 }
 
 $('.js-play').on('click', function() {

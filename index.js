@@ -23,13 +23,13 @@ var print_players = function(online_players) {
   for(var key in online_players) {
     nicknames.push(online_players[key]['nickname']);
   };
-  return nicknames;
+  return nicknames.join(', ');
 };
 
 app.use(express.static('public'))
 
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+http.listen(process.env.NODE_PORT, function() {
+  console.log('listening on *:'+ process.env.NODE_PORT);
 });
 
 io.on('connection', function(socket){
@@ -38,12 +38,15 @@ io.on('connection', function(socket){
   console.log(message + ' ' + online_players);
   console.log(print_players(online_players));
   io.emit("debug", message);
+  online_count = Object.keys(online_players).length
+  io.emit("server_info", { player_count: online_count, whos_online: print_players(online_players) });
 
   socket.on('disconnect', function(){
     message =  'a user disconnected ' + socket.handshake.query.nickname;
     remove_player(online_players, socket.handshake.query);
     console.log(message + ', players left: ' +print_players(online_players));
     io.emit("debug", message);
+    io.emit("server_info", { player_count: online_count, whos_online: print_players(online_players) });
   });
 
   socket.on('shoot', function(query) {
