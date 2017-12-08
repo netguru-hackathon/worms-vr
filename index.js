@@ -8,6 +8,41 @@ var turns = [];
 var current_turn = "";
 var player_count = 0;
 
+const G = 9.81;
+const TIME_STEP = 0.1;
+
+var isColision = function(position) {
+  if (position.z < 0.0) {
+    return { colision: true, reason: 'Hit ground' };
+  }
+  return { colision: false, reason: null };
+};
+
+var step = function(position, angle, velocity, t) {
+  var { x, y, z } = position;
+  x += velocity * t * Math.cos(angle.azymut);
+  y += velocity * t * Math.sin(angle.azymut);
+  z += velocity * t * Math.sin(angle.tilt) - 0.5 * G * t * t;
+
+  return { x: x, y: y, z: z };
+};
+
+var ticks = function(latLong, angle, velocity, t = 0) {
+  var steps = [];
+  var position = { x: latLong.latitude, y: latLong.longitude, z: 0 };
+  var colisionReason = isColision(position)
+
+  while (!colisionReason.colision) {
+    t += TIME_STEP;
+    position = step(position, angle, velocity, t);
+    steps[t] = position;
+
+    colisionReason = isColision(position);
+  }
+
+  return { steps: steps, colision: colisionReason };
+};
+
 var add_player = function(online_players, query) {
   var player_hash = { nickname: query.nickname, unique_hash: query.unique_hash };
   turns.push(query.unique_hash);
@@ -70,6 +105,11 @@ io.on('connection', function(socket){
       current_turn_info = online_players[current_turn]['nickname'];
 
       io.emit("debug", "I just shoot!");
+
+      var projectile = ticks(online_players[current_turn], { azymut: 0, tilt: 45 }, 50);
+
+      io.emit('debug', projectile);
+
       io.emit("server_info", { current_turn: current_turn_info, player_count: player_count, whos_online: print_players(online_players) });
     } else {
       io.emit("debug", "You have to wait for your turn, broski");
