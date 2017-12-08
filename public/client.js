@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                           navigator.mozGetUserMedia ||
                           navigator.msGetUserMedia;
 
-  video = $('video');
+  video = document.querySelector('video');
 
   if (navigator.getUserMedia) {
 
@@ -74,21 +74,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // mobile -> { facingMode: { exact: "environment" } }
 
     if (mobilecheck()) {
-      mode = "environment";
+      mode = { facingMode: { exact: "environment" } };
     }
     else {
-      mode = "user";
+      mode = { facingMode: "user" };
     }
 
     navigator.getUserMedia(
-      { audio: false, video: { facingMode: { exact: "user" } } },
+      { audio: false, video: mode },
       function(stream) {
         video.src = window.URL.createObjectURL(stream);
-      }, function(err) { console.log("Error camera"); }
+      }, function(err) { console.log("Error camera during setting up camera" + err.name); }
     );
 
   } else {
-    console.log("Error camera");
+    console.log("Error camera - getUserMedia not available");
   }
 });
 
