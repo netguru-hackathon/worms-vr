@@ -4,65 +4,6 @@ function mobilecheck() {
   return check;
 }
 
-function makeid() {
-  var text = "";
-  var possible = "ABCDEF0123456789";
-
-  for (var i = 0; i < 10; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(setPosition);
-  } else {
-    alert('geolocation error');
-  }
-}
-
-function setPosition(pos) {
-  window.state["latitude"] = pos.coords.latitude;
-  window.state["longitude"] = pos.coords.longitude;
-}
-
-function startGame() {
-  socket = io({query: window.state});
-
-  socket.on('debug', function(message) {
-    el = $('<div/>');
-    el.html(JSON.stringify(message));
-    $('.js-debug').append(el);
-  });
-
-  socket.on('server_info', function(message) {
-    $('.js-players-online').html(message['player_count']);
-    $('.js-current-turn').html(message['current_turn']);
-    $('.js-whos-online').html(message['whos_online']);
-  });
-}
-
-$('.js-play').on('click', function() {
-  window.state["nickname"] = $('.js-nick-input').val();
-  window.state["unique_hash"] = makeid();
-  startGame();
-  $('.js-nick-modal').hide();
-  $('.js-shoot').show();
-  $('.js-server-info').show();
-  $('.js-video').show();
-  $('.js-scene').show();
-});
-
-$('.js-shoot').on('click', function() {
-  socket.emit('shoot', window.state);
-  // fetch data from all sensors
-});
-
-setTimeout(function() {
-  getLocation();
-}, 3000);
-
 document.addEventListener("DOMContentLoaded", function(event) {
   navigator.getUserMedia  = navigator.getUserMedia ||
                           navigator.webkitGetUserMedia ||
@@ -94,42 +35,3 @@ document.addEventListener("DOMContentLoaded", function(event) {
     console.log("Error camera - getUserMedia not available");
   }
 });
-
-getLocation();
-window.state = {};
-var socket;
-
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-// document.body.appendChild( renderer.domElement );
-$('.scene').append( renderer.domElement );
-
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00fffd } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-
-camera.position.z = 5;
-
-var animate = function () {
-  requestAnimationFrame( animate );
-
-  cube.rotation.x += 0.1;
-  cube.rotation.y += 0.1;
-
-  renderer.render(scene, camera);
-};
-
-animate();
-
-window.addEventListener("deviceorientation", function(event) {
-  var gyro_data = {
-    alpha: event.alpha,
-    beta: event.beta,
-    gamma: event.gamma
-  }
-  socket.emit('gyro_data', gyro_data);
-}, true);
